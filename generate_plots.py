@@ -31,6 +31,16 @@ def generate_plain_text_history(file_directory):
     )
 
 
+def visualize_profile(file_directory):
+    os.environ["experiment"] = "c128_6ranks_baroclinic"
+    os.environ["backend"] = "gtcuda"
+    profile_path = file_directory + "/fv3core_profile/gtcuda/prof"
+    val = subprocess.check_call(
+        "./performance_profile/visualize_profile.sh '%s'" % profile_path,
+        shell=True,
+    )
+
+
 @click.command()
 @click.argument("file_directory", required=True, nargs=1)
 @click.argument("comparison_directory", required=False, default=None, nargs=1)
@@ -48,6 +58,7 @@ def driver(file_directory: str, comparison_directory: Optional[str]):
         generate_timing_plots(file_directory)
         summarize_raw_files(file_directory)
         genererate_plain_text_profile_summary(file_directory)
+        visualize_profile(file_directory)
         generate_plain_text_history(file_directory)
 
 
