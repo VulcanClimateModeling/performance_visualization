@@ -1,10 +1,10 @@
 #================== WARNING: experimental stuff below
-
-cat > list_commits.sh <<'EOF'
-#!/bin/bash
+ROOT_DIR=`pwd`
 git clone git@github.com:vulcanclimatemodeling/fv3core.git tmpdir
 cd tmpdir 
 git checkout master
+cat > list_commits.sh <<'EOF'
+#!/bin/bash
 echo "                    timings file |  git hash |     mainloop per timestep"
 echo "---------------------------------|-----------|--------------------------"
 for f in `/bin/ls -1d $1/*_summary.json | grep -v memory_usage | tac` ; do
@@ -25,18 +25,15 @@ for f in `/bin/ls -1d $1/*_summary.json | grep -v memory_usage | tac` ; do
   mainloop=`printf %10.3f ${mainloop}`
   echo "${filename} |   ${short_hash} | ${mainloop}s"
 done
-cd -
-rm -rf tmpdir
 EOF
 chmod 755 list_commits.sh
 echo "========================================" | tee commits.txt
 ./list_commits.sh $1 | tee -a commits.txt
 echo "========================================" | tee -a commits.txt
-
 mkdir -p html
-echo "<html><body><pre>" > html/index.html
-cat commits.txt >> html/index.html
-echo "</pre></body></html>" >> html/index.html
-
-
+echo "<html><body><pre>" > $ROOT_DIR/html/performance_history.html
+cat commits.txt >> $ROOT_DIR/html/performance_history.html
+echo "</pre></body></html>" >> $ROOT_DIR/html/performance_history.html
+cd -
+rm -rf tmpdir
 exit 0

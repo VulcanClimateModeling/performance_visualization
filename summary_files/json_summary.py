@@ -75,12 +75,12 @@ def is_valid_file(fullpath: str):
 
 
 def analyze_foler(data_directory):
-    for subdir, _, files in os.walk(data_directory):
+    performance_dir = data_directory + "/fv3core_performance/"
+    for subdir, _, files in os.walk(performance_dir):
         for file in files:
             fullpath = os.path.join(subdir, file)
             if is_valid_file(fullpath):
                 analyze_file_at_path(fullpath)
-        break  # We only want to look at top directory
 
 
 if __name__ == "__main__":
