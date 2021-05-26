@@ -3,8 +3,13 @@ from typing import Optional
 import os
 import subprocess
 
-from performance_plots.plotting import plotting as generate_timing_plots
+from performance_plots.plotting import plotting
 from summary_files.json_summary import analyze_foler as summarize_raw_files
+
+
+def generate_timing_plots(file_directory):
+    data_dir = file_directory + "/fv3core_performance/"
+    plotting(data_dir)
 
 
 def genererate_plain_text_profile_summary(file_directory):
