@@ -3,13 +3,10 @@
 data_root=/project/s1053/performance/
 
 # activate the environment
-root_dir=`dirname $0`/../
-cd ${root_dir}/external/daint_venv
-./install.sh ${root_dir}/venv
-source ${root_dir}/venv/bin/activate
-# source /project/s1053/install/venv/vcm_1.0/bin/activate
-pip install gprof2dot
-cd $root_dir
+module load cray-python
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 
 
 # generate plots

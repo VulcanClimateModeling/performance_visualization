@@ -1,0 +1,6 @@
+matplotlib
+numpy
+click
+argparse
+pathlib
+statistics
