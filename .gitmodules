@@ -1,0 +1,3 @@
+[submodule "external/daint_venv"]
+	path = external/daint_venv
+	url = git@github.com:VulcanClimateModeling/daint_venv.git
