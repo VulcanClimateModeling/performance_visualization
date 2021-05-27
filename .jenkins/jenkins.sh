@@ -9,7 +9,7 @@ cd ${root_dir}/external/daint_venv
 source ${root_dir}/venv/bin/activate
 # source /project/s1053/install/venv/vcm_1.0/bin/activate
 pip install gprof2dot
-cd -
+cd $root_dir
 
 
 # generate plots
