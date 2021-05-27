@@ -4,3 +4,4 @@ click
 argparse
 pathlib
 statistics
+gprof2dot
