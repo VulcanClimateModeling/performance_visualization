@@ -3,7 +3,7 @@
 data_root=/project/s1053/performance/
 
 # activate the environment
-root_dir=`dirname $0`
+root_dir=`dirname $0`/../
 cd ${root_dir}/external/daint_venv
 ./install.sh ${root_dir}/venv
 source ${root_dir}/venv/bin/activate
