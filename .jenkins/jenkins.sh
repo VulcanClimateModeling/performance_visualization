@@ -4,6 +4,7 @@ data_root=/project/s1053/performance/
 
 # activate the environment
 module load cray-python
+module load graphviz
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
