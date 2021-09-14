@@ -7,7 +7,7 @@
         },
         "python/gtc:gt:gpu": {
             "color": "#f5793a",
-            "short_name": "gtc:gt:gpu"
+            "short_name": "gtc:gpu"
         },
         "python/gtcuda": {
             "color": "#ee442f",
@@ -15,7 +15,7 @@
         },
         "python/gtc:gt:cpu_ifirst": {
             "color": "#85c0f9",
-            "short_name": "gtc:gt:cpu_ifirst"
+            "short_name": "gtc:cpu_ifirst"
         },
         "python/gtx86": {
             "color": "#0f2080",
@@ -132,7 +132,7 @@
                     "name": "DynCore"
                 },
                 {
-                    "linestyle": "--x",
+                    "linestyle": "-x",
                     "name": "Remapping"
                 },
                 {
