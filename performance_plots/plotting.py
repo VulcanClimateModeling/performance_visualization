@@ -196,6 +196,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         ][-1]
         last_fortran_mainloop = np.median(last_fortran["times"]["mainloop"]["times"])
         for backend in plot_config["backends"]:
+            backend_config = backends[backend]
             plt.figure()
             # Ys are mainloop median + fortran reference
             specific = [
@@ -210,8 +211,8 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
             xs = np.arange(plot_config["run_to_go_back"])
             xs_hash = [x["setup"]["hash"][:6] for x in specific]
             # plot
-            plt.bar(xs, ys)
-            plt.axhline(y=1, color="r", linestyle="--")
+            plt.bar(xs, ys, color=backend_config["color"])
+            plt.axhline(y=1, color="#000000", linestyle="--")
             ax = plt.gca()
             plt.xticks(xs, xs_hash, fontsize=fontsize)
             plt.ylabel("Speed up factor")
