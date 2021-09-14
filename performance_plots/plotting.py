@@ -87,10 +87,11 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         plt.ylabel(plot_config["y_axis_label"])
         plt.xlabel(plot_config["x_axis_label"])
         plt.yticks(fontsize=fontsize)
+        plt.yscale(plot_config["yscale"])
         plt.legend(
-            loc="upper center",
-            bbox_to_anchor=(0.5, 1.05),
-            ncol=2,
+            loc="center left",
+            bbox_to_anchor=(1.04,0.5),
+            borderaxespad=0,
             fancybox=True,
             shadow=True,
             fontsize=fontsize * 0.8,
@@ -100,7 +101,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         ax.set_facecolor("white")
         plt.grid(color="silver", alpha=0.4)
         plt.gcf().set_size_inches(8, 6)
-        plt.savefig("history_" + memory_plot + ".png", dpi=100)
+        plt.savefig("history_" + memory_plot + ".png", dpi=100, bbox_inches="tight")
 
     for plot_name, plot_config in timing_plots.items():
         matplotlib.rcParams.update({"font.size": fontsize})
@@ -122,7 +123,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
                     label = None
                     if "mainloop" in timer["name"] or "total" in timer["name"]:
                         label = backend_config["short_name"]
-                    elif "gtcuda" in backend_config["short_name"]:
+                    else:
                         label = backend_config["short_name"] + " " + timer["name"]
                     plt.plot(
                         [
@@ -172,10 +173,11 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         plt.ylabel(plot_config["y_axis_label"])
         plt.xlabel(plot_config["x_axis_label"])
         plt.yticks(fontsize=fontsize)
+        plt.yscale(plot_config["yscale"])
         plt.legend(
-            loc="upper center",
-            bbox_to_anchor=(0.5, 1.05),
-            ncol=2,
+            loc="center left",
+            bbox_to_anchor=(1.04,0.5),
+            borderaxespad=0,
             fancybox=True,
             shadow=True,
             fontsize=fontsize * 0.8,
@@ -185,7 +187,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         ax.set_facecolor("white")
         plt.grid(color="silver", alpha=0.4)
         plt.gcf().set_size_inches(8, 6)
-        plt.savefig("history_" + plot_name + ".png", dpi=100)
+        plt.savefig("history_" + plot_name + ".png", dpi=100, bbox_inches="tight")
 
     for plot_name, plot_config in timing_bar_plots.items():
         matplotlib.rcParams.update({"font.size": fontsize})
@@ -194,35 +196,42 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         ][-1]
         last_fortran_mainloop = np.median(last_fortran["times"]["mainloop"]["times"])
         for backend in plot_config["backends"]:
+            backend_config = backends[backend]
             plt.figure()
+            # Filter duplicate hashes up until "run_to_go_back"
             # Ys are mainloop median + fortran reference
+            # Xs are fake data + hash commits
+            x_hash = []
+            y_median = []
             specific = [
                 x for x in full_timing_data if x["setup"]["version"] == backend
-            ][-plot_config["run_to_go_back"] :]
-            mainloops_speedup = [
-                last_fortran_mainloop / np.median(x["times"]["mainloop"]["times"])
-                for x in specific
             ]
-            ys = mainloops_speedup
-            # Xs are fake data + hash commits
-            xs = np.arange(plot_config["run_to_go_back"])
-            xs_hash = [x["setup"]["hash"][:6] for x in specific]
+            for x in specific:
+                commit_hash = x["setup"]["hash"][:6]
+                if commit_hash not in x_hash:
+                    x_hash.append(commit_hash)
+                    y_median.append(last_fortran_mainloop / np.median(x["times"]["mainloop"]["times"]))
+                    if len(x_hash) >= plot_config["run_to_go_back"]:
+                        break
+          
+            xs = np.arange(min(plot_config["run_to_go_back"], len(x_hash)))
             # plot
-            plt.bar(xs, ys)
-            plt.axhline(y=1, color="r", linestyle="--")
+            plt.bar(xs, y_median, color=backend_config["color"])
+            plt.axhline(y=1, color="#000000", linestyle="--")
             ax = plt.gca()
-            plt.xticks(xs, xs_hash, fontsize=fontsize)
+            plt.xticks(xs, x_hash, fontsize=fontsize)
             plt.ylabel("Speed up factor")
             plt.xlabel("Commit hashes (latest to the right)")
             plt.yticks(fontsize=fontsize)
+            plt.yscale(plot_config["yscale"])
             plt.title(
-                f"Speedup of {backend} vs Fortran on mainloop (last 3 runs)",
+                f"Speedup of {backend} vs Fortran on mainloop (last {plot_config['run_to_go_back']} runs)",
                 pad=20,
             )
             ax.set_facecolor("white")
             plt.grid(color="silver", alpha=0.4)
             plt.gcf().set_size_inches(8, 6)
-            plt.savefig(f"speedup_{plot_name}_{backend.replace('/', '_')}.png", dpi=100)
+            plt.savefig(f"speedup_{plot_name}_{backend.replace('/', '_')}.png", dpi=100, bbox_inches="tight")
 
 
 @click.command()

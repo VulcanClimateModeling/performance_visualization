@@ -2,19 +2,27 @@
     "filters": "c128",
     "backends": {
         "fortran": {
-            "color": "#7f7f7f",
+            "color": "#bdb8ad",
             "short_name": "f90"
         },
+        "python/gtc:gt:gpu": {
+            "color": "#f5793a",
+            "short_name": "gtc:gpu"
+        },
         "python/gtcuda": {
-            "color": "#d62728",
+            "color": "#ee442f",
             "short_name": "gtcuda"
         },
+        "python/gtc:gt:cpu_ifirst": {
+            "color": "#85c0f9",
+            "short_name": "gtc:cpu_ifirst"
+        },
         "python/gtx86": {
-            "color": "#2ca02c",
+            "color": "#0f2080",
             "short_name": "gtx86"
         },
         "python/numpy": {
-            "color": "#1f77b4",
+            "color": "#abc3c9",
             "short_name": "numpy"
         }
     },
@@ -22,18 +30,19 @@
         "absolute_time": {
             "backends": [
                 "fortran",
-                "python/gtcuda",
-                "python/gtx86"
+                "python/gtc:gt:gpu",
+                "python/gtc:gt:cpu_ifirst"
             ],
             "only_recent": false,
             "plot_stddev": false,
+            "yscale": "linear",
             "timers": [
                 {
-                    "linestyle": "-o",
+                    "linestyle": "-x",
                     "name": "total"
                 },
                 {
-                    "linestyle": "--o",
+                    "linestyle": "--x",
                     "name": "initialization"
                 }
             ],
@@ -45,18 +54,19 @@
         "absolute_time_recent": {
             "backends": [
                 "fortran",
-                "python/gtcuda",
-                "python/gtx86"
+                "python/gtc:gt:gpu",
+                "python/gtc:gt:cpu_ifirst"
             ],
             "only_recent": true,
             "plot_stddev": false,
+            "yscale": "linear",
             "timers": [
                 {
-                    "linestyle": "-o",
+                    "linestyle": "-x",
                     "name": "total"
                 },
                 {
-                    "linestyle": "--o",
+                    "linestyle": "--x",
                     "name": "initialization"
                 }
             ],
@@ -67,15 +77,18 @@
         },
         "per_timestep": {
             "backends": [
+                "python/gtc:gt:gpu",
+                "python/gtc:gt:cpu_ifirst",
                 "python/gtcuda",
                 "python/gtx86",
                 "fortran"
             ],
             "only_recent": false,
             "plot_stddev": true,
+            "yscale": "log",
             "timers": [
                 {
-                    "linestyle": "-o",
+                    "linestyle": "-.",
                     "name": "mainloop"
                 }
             ],
@@ -86,15 +99,16 @@
         },
         "per_timestep_recent": {
             "backends": [
-                "python/gtcuda",
-                "python/gtx86",
+                "python/gtc:gt:gpu",
+                "python/gtc:gt:cpu_ifirst",
                 "fortran"
             ],
             "only_recent": true,
             "plot_stddev": true,
+            "yscale": "linear",
             "timers": [
                 {
-                    "linestyle": "-o",
+                    "linestyle": "-x",
                     "name": "mainloop"
                 }
             ],
@@ -105,23 +119,24 @@
         },
         "per_timestep_mainloop_detail": {
             "backends": [
-                "python/gtcuda",
-                "python/gtx86",
+                "python/gtc:gt:gpu",
+                "python/gtc:gt:cpu_ifirst",
                 "fortran"
             ],
             "only_recent": true,
             "plot_stddev": false,
+            "yscale": "linear",
             "timers": [
                 {
-                    "linestyle": "--o",
+                    "linestyle": "--x",
                     "name": "DynCore"
                 },
                 {
-                    "linestyle": "-.o",
+                    "linestyle": "-x",
                     "name": "Remapping"
                 },
                 {
-                    "linestyle": ":o",
+                    "linestyle": ":x",
                     "name": "TracerAdvection"
                 }
             ],
@@ -136,9 +151,10 @@
             ],
             "only_recent": false,
             "plot_stddev": false,
+            "yscale": "linear",
             "timers": [
                 {
-                    "linestyle": "-o",
+                    "linestyle": "-x",
                     "name": "mainloop"
                 }
             ],
@@ -151,10 +167,11 @@
     "timing_bar_plots": {
         "mainloop_vs_fortran": {
             "backends": [
-                "python/gtcuda",
-                "python/gtx86"
+                "python/gtc:gt:gpu",
+                "python/gtc:gt:cpu_ifirst"
             ],
             "run_to_go_back": 10,
+            "yscale": "linear",
             "title": "Performance comparison to fortran of mainloop (last 10 per backends)",
             "type": "latest_vs_fortran"
         }
@@ -162,10 +179,11 @@
     "memory_plots": {
         "memory_footprint": {
             "backends": [
-                "python/gtcuda"
+                "python/gtc:gt:gpu"
             ],
             "only_recent": true,
             "title": "Memory usage per GPU for total run",
+            "yscale": "linear",
             "x_axis_label": "Date of benchmark",
             "y_axis_label": "Memory usage [%]"
         }
