@@ -122,7 +122,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
                     label = None
                     if "mainloop" in timer["name"] or "total" in timer["name"]:
                         label = backend_config["short_name"]
-                    elif "gtcuda" in backend_config["short_name"]:
+                    elif "gtc:gt:gpu" in backend_config["short_name"]:
                         label = backend_config["short_name"] + " " + timer["name"]
                     plt.plot(
                         [
