@@ -87,6 +87,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         plt.ylabel(plot_config["y_axis_label"])
         plt.xlabel(plot_config["x_axis_label"])
         plt.yticks(fontsize=fontsize)
+        plt.yscale(plot_config["yscale"])
         plt.legend(
             loc="upper center",
             bbox_to_anchor=(0.5, 1.05),
@@ -172,6 +173,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         plt.ylabel(plot_config["y_axis_label"])
         plt.xlabel(plot_config["x_axis_label"])
         plt.yticks(fontsize=fontsize)
+        plt.yscale(plot_config["yscale"])
         plt.legend(
             loc="upper center",
             bbox_to_anchor=(0.5, 1.05),
@@ -215,6 +217,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
             plt.ylabel("Speed up factor")
             plt.xlabel("Commit hashes (latest to the right)")
             plt.yticks(fontsize=fontsize)
+            plt.yscale(plot_config["yscale"])
             plt.title(
                 f"Speedup of {backend} vs Fortran on mainloop (last 3 runs)",
                 pad=20,
