@@ -1,0 +1,86 @@
+{
+    "nvtx_marks": [
+        {
+            "key": {
+                "fn": "__call__",
+                "file": "fv3core/decorators.py"
+            },
+            "name_op": "gt4py_stencil"
+        },
+        {
+            "key": {
+                "fn": "step_dynamics",
+                "file": "fv3core/stencils/fv_dynamics.py"
+            },
+            "name_op": "function"
+        },
+        {
+            "key": {
+                "fn": "wait",
+                "file": "fv3gfs/util/halo_updater.py"
+            },
+            "name": "HaloUpdater.wait"
+        },
+        {
+            "fn": "start",
+            "file": "fv3gfs/util/halo_updater.py",
+            "name": "HaloUpdater.start"
+        },
+        {
+            "key": {
+                "fn": "async_pack",
+                "file": "fv3gfs/util/halo_data_transformer.py"
+            },
+            "name": "HaloDataTrf.async_pack"
+        },
+        {
+            "key": {
+                "fn": "async_unpack",
+                "file": "fv3gfs/util/halo_data_transformer.py"
+            },
+            "name": "HaloDataTrf.async_unpack"
+        },
+        {
+            "key": {
+                "fn": "synchronize",
+                "file": "fv3gfs/util/halo_data_transformer.py"
+            },
+            "name": "HaloDataTrf.synchronize"
+        },
+        {
+            "key": {
+                "fn": "__call__",
+                "file": "fv3core/stencils/"
+            },
+            "name_op": "wrapper"
+        }
+    ],
+    "nsys": {
+        "cuda_kernel_filtering_regex": "(?<=bound_functor)(.*?)(?=_impl)",
+        "nvtx_marks": {
+            "mainloop": "step_dynamics",
+            "stages": [
+                {
+                    "name": "components",
+                    "keys": [
+                        "Acoustic timestep",
+                        "Tracer advection"
+                    ]
+                },
+                {
+                    "name": "halo exchange",
+                    "keys": [
+                        "HaloUpdater.wait",
+                        "HaloEx: unpack and wait",
+                        "HaloUpdater.start",
+                        "HaloEx: async scalar",
+                        "HaloEx: async vector"
+                    ],
+                    "keys_to_remove": [
+                        "Pre HaloEx"
+                    ]
+                }
+            ]
+        }
+    }
+}
