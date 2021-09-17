@@ -6,12 +6,10 @@ Works with nvtx (via cupy) for now.
 """
 
 import sys
-import json
 from argparse import ArgumentParser
 
-from tools import nvtx_markings, stencil_reproducer
-
-
+from analysis.tools import nvtx_markings, stencil_reproducer
+from analysis.config import load_analysis_config
 try:
     import cupy as cp
 except ModuleNotFoundError:
@@ -58,7 +56,6 @@ def profile_hook(frame, event, args):
 
 
 cmd_line_args = None
-CONFIG = None
 if __name__ == "__main__":
     # Parse arguments and check validity
     cmd_line_args, unknown = parse_args()
@@ -75,7 +72,7 @@ if __name__ == "__main__":
     # Read config file
     if cmd_line_args.config is None:
         raise RuntimeError("FAILED: No configuration file.")
-    CONFIG = json.load(cmd_line_args.config)
+    load_analysis_config(cmd_line_args.config)
     # Operations
     if cmd_line_args.stencil is not None:
         stencil_reproducer.collect_stencil_candidate(

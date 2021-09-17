@@ -3,8 +3,7 @@ try:
 except ModuleNotFoundError:
     cp = None
 
-from ..external_profiler import CONFIG
-
+from analysis.config import get_analysis_config
 
 def get_class_from_frame(frame):
     try:
@@ -46,8 +45,9 @@ name_op = {
 
 def mark(frame, event, args):
     """Hooks at each function call & exit to record a Mark."""
+    config = get_analysis_config()
     if event == "call":
-        for fn_desc in CONFIG["nvtx_marks"]:
+        for fn_desc in config["nvtx_marks"]:
             key = fn_desc["key"]
             if frame.f_code.co_name == key["fn"] and (
                 key["file"] is None or key["file"] in frame.f_code.co_filename
@@ -55,12 +55,12 @@ def mark(frame, event, args):
                 if "name" in fn_desc:
                     name = fn_desc["name"]
                 elif "name_op" in fn_desc:
-                    name = fn_desc["name_op"](frame, event, args)
+                    name = name_op[fn_desc["name_op"]](frame, event, args)
                 else:
                     raise RuntimeError("Unrecognized name operator")
                 cp.cuda.nvtx.RangePush(name)
     elif event == "return":
-        for fn_desc in CONFIG["nvtx_marks"]:
+        for fn_desc in config["nvtx_marks"]:
             key = fn_desc["key"]
             if frame.f_code.co_name == key["fn"] and (
                 key["file"] is None or key["file"] in frame.f_code.co_filename

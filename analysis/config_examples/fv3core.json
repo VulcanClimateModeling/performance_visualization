@@ -22,8 +22,10 @@
             "name": "HaloUpdater.wait"
         },
         {
-            "fn": "start",
-            "file": "fv3gfs/util/halo_updater.py",
+            "key": {
+                "fn": "start",
+                "file": "fv3gfs/util/halo_updater.py"
+            },
             "name": "HaloUpdater.start"
         },
         {
@@ -49,6 +51,13 @@
         },
         {
             "key": {
+                "fn": "_device_synchronize",
+                "file": "fv3gfs/util/communicator.py"
+            },
+            "name": "Pre-halo device synchronize"
+        },
+        {
+            "key": {
                 "fn": "__call__",
                 "file": "fv3core/stencils/"
             },
@@ -64,7 +73,8 @@
                     "name": "components",
                     "keys": [
                         "Acoustic timestep",
-                        "Tracer advection"
+                        "Tracer advection",
+                        "LagrangianToEulerian"
                     ]
                 },
                 {
@@ -77,7 +87,7 @@
                         "HaloEx: async vector"
                     ],
                     "keys_to_remove": [
-                        "Pre HaloEx"
+                        "Pre-halo device synchronize"
                     ]
                 }
             ]
