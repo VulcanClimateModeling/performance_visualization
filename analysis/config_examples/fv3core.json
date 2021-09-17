@@ -1,0 +1,96 @@
+{
+    "nvtx_marks": [
+        {
+            "key": {
+                "fn": "__call__",
+                "file": "fv3core/decorators.py"
+            },
+            "name_op": "gt4py_stencil"
+        },
+        {
+            "key": {
+                "fn": "step_dynamics",
+                "file": "fv3core/stencils/fv_dynamics.py"
+            },
+            "name_op": "function"
+        },
+        {
+            "key": {
+                "fn": "wait",
+                "file": "fv3gfs/util/halo_updater.py"
+            },
+            "name": "HaloUpdater.wait"
+        },
+        {
+            "key": {
+                "fn": "start",
+                "file": "fv3gfs/util/halo_updater.py"
+            },
+            "name": "HaloUpdater.start"
+        },
+        {
+            "key": {
+                "fn": "async_pack",
+                "file": "fv3gfs/util/halo_data_transformer.py"
+            },
+            "name": "HaloDataTrf.async_pack"
+        },
+        {
+            "key": {
+                "fn": "async_unpack",
+                "file": "fv3gfs/util/halo_data_transformer.py"
+            },
+            "name": "HaloDataTrf.async_unpack"
+        },
+        {
+            "key": {
+                "fn": "synchronize",
+                "file": "fv3gfs/util/halo_data_transformer.py"
+            },
+            "name": "HaloDataTrf.synchronize"
+        },
+        {
+            "key": {
+                "fn": "_device_synchronize",
+                "file": "fv3gfs/util/communicator.py"
+            },
+            "name": "Pre-halo device synchronize"
+        },
+        {
+            "key": {
+                "fn": "__call__",
+                "file": "fv3core/stencils/"
+            },
+            "name_op": "wrapper"
+        }
+    ],
+    "nsys_mine": {
+        "cuda_kernel_filtering_regex": "(?<=bound_functor)(.*?)(?=_impl)",
+        "nvtx_marks": {
+            "mainloop": "step_dynamics",
+            "stages": [
+                {
+                    "name": "components",
+                    "keys": [
+                        "Acoustic timestep",
+                        "Tracer advection",
+                        "LagrangianToEulerian"
+                    ]
+                },
+                {
+                    "name": "halo exchange",
+                    "keys_for_call_count": [
+                        "HaloUpdater.start"
+                    ],
+                    "keys": [
+                        "HaloUpdater.wait",
+                        "HaloUpdater.start"
+                    ],
+                    "keys_to_remove": [
+                        "Pre-halo device synchronize"
+                    ]
+                }
+            ]
+        }
+    }
+}

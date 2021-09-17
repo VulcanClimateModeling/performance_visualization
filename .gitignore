@@ -2,3 +2,7 @@
 
 test_data
 **/*.pyc
+
+venv/
+*.png
+*.egg-info
