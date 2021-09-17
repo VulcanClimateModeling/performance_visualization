@@ -18,26 +18,7 @@ from nsys_data_mining.nvtxquery import CUDANVTXTrace, NVTXReportIndexing
 from nsys_data_mining.synchronizequery import SyncReportIndexing, SyncTrace
 from tabulate import tabulate
 
-
-# TODO: All of those should be part of a .json if we move it out of `fv3core`
-FV3_MAINLOOP = "step_dynamics"
-FV3_STAGES = [
-    "Acoustic timestep",
-    "Tracer advection",
-]  # TODO remap is not tagged in nvtx
-
-FV3_START_ASYNC_HALOS = [
-    "HaloUpdater.start",
-    "HaloEx: async scalar",
-    "HaloEx: async vector",
-]
-
-FV3_ASYNC_HALOS = FV3_START_ASYNC_HALOS + [
-    "HaloUpdater.wait",
-    "HaloEx: unpack and wait",
-]
-
-FV3_NOT_HALOS = ["Pre HaloEx"]
+from analysis.config import load_analysis_config, get_analysis_config
 
 
 def _count_calls_start_with_name(rows: List[str], index: int, target_name: str) -> int:
@@ -186,11 +167,11 @@ def _plot_total_call(fv3_kernel_timings: Dict[str, List[int]]):
     plot.savefig("call_per_kernel.png")
 
 
-def _filter_kernel_name(kernels: List[Any]) -> List[Any]:
+def _filter_kernel_name(kernels: List[Any], cleanup_regex: str) -> List[Any]:
     """Filter the gridtools c++ kernel name to a readable name"""
     # Run a regex to convert the stencil generated string to a readable one
     approx_stencil_name_re = re.search(
-        "(?<=bound_functor)(.*?)(?=_impl)",
+        cleanup_regex,
         kernels[KernelReportIndexing.NAME.value],
     )
     if approx_stencil_name_re is None:
@@ -208,9 +189,15 @@ def _filter_kernel_name(kernels: List[Any]) -> List[Any]:
 
 
 def parse_args():
-    usage = "usage: python %(prog)s <--csv> <--plots> <database>"
+    usage = "usage: python %(prog)s --config path_to_config <--csv> <--plots> path_to_database"
     parser = ArgumentParser(usage=usage)
     parser.add_argument("database", type=str, help="sqlite or qdrep path to file")
+    parser.add_argument(
+        "--config",
+        type=str,
+        action="store",
+        help="mandatory configuration file",
+    )
     parser.add_argument(
         "--csv",
         action="store_true",
@@ -256,6 +243,13 @@ if __name__ == "__main__":
     else:
         raise RuntimeError("Cmd needs a '.sqlite' or '.qdrep'.")
 
+    # Load configuration
+    if cmd_line_args.config is None:
+        raise RuntimeError("Requires to define a config file with --config.")
+    load_analysis_config(cmd_line_args.config)
+    config = get_analysis_config()
+    config_nvtx_marks = config["nsys_mine"]["nvtx_marks"]
+
     # Determin NSYS _minimum_ version the sql DB has been generated with.
     # We are using our own API version. See above.
     # The SQL schema has evolved and this allow for cross-version code
@@ -272,7 +266,7 @@ if __name__ == "__main__":
     min_start = 0
     max_end = sys.maxsize
     for row in nvtx_results:
-        if row[NVTXReportIndexing.TEXT.value] == FV3_MAINLOOP:
+        if row[NVTXReportIndexing.TEXT.value] == config_nvtx_marks["mainloop"]:
             if skip_first_mainloop is True:
                 skip_first_mainloop = False
             else:
@@ -283,11 +277,19 @@ if __name__ == "__main__":
     timestep_time_in_ms = (float(max_end) - float(min_start)) * 1.0e3
     print(f"Mining timestep between {min_start} and {max_end}")
 
+    # Stages analysis (TODO done by hand here for halo, should be generic)
+    for stage in config_nvtx_marks["stages"]:
+        if stage["name"] == "halo exchange":
+            halo_stage = stage
+
     # Gather HaloEx markers
+    halo_stage_keys = halo_stage["keys"]
+    halo_stage_keys_for_call_count = halo_stage["keys_for_call_count"]
+    halo_stage_keys_to_remove = halo_stage["keys_to_remove"]
     filtered_halo_nvtx = []
     for row in nvtx_results:
         if (
-            row[NVTXReportIndexing.TEXT.value] in FV3_ASYNC_HALOS
+            row[NVTXReportIndexing.TEXT.value] in halo_stage_keys
             and min_start < row[NVTXReportIndexing.START.value]
             and max_end > row[NVTXReportIndexing.END.value]
         ):
@@ -305,7 +307,7 @@ if __name__ == "__main__":
         total_non_halo_ex = 0
         for row in nvtx_results:
             if (
-                row[NVTXReportIndexing.TEXT.value] in FV3_NOT_HALOS
+                row[NVTXReportIndexing.TEXT.value] in halo_stage_keys_to_remove
                 and min_start < row[NVTXReportIndexing.START.value]
                 and max_end > row[NVTXReportIndexing.END.value]
             ):
@@ -322,10 +324,10 @@ if __name__ == "__main__":
                 raise RuntimeError("Could not calculate total NON halo")
         halo_ex_time_in_ms = (total_halo_ex - total_non_halo_ex) / 1e6
         # > Count all halos
-        only_start_halo = 0
+        halo_call_count = 0
         for row in filtered_halo_nvtx:
-            if row[NVTXReportIndexing.TEXT.value] in FV3_START_ASYNC_HALOS:
-                only_start_halo += 1
+            if row[NVTXReportIndexing.TEXT.value] in halo_stage_keys_for_call_count:
+                halo_call_count += 1
 
     # Filter the rows between - min_start/max_end & aggregate
     # the names
@@ -333,7 +335,9 @@ if __name__ == "__main__":
     for row in kernels_results:
         if row is None:
             continue
-        row = _filter_kernel_name(row)
+        row = _filter_kernel_name(
+            row, config["nsys_mine"]["cuda_kernel_filtering_regex"]
+        )
         if (
             row[KernelReportIndexing.START.value] > min_start
             and row[KernelReportIndexing.END.value] < max_end
@@ -397,7 +401,7 @@ if __name__ == "__main__":
         )
         halo_summary_text = (
             f"Halo exchange:\n"
-            f"  count: {only_start_halo}\n"
+            f"  count: {halo_call_count}\n"
             f"  cumulative time: {halo_ex_time_in_ms:.2f}ms "
             f"({( halo_ex_time_in_ms / timestep_time_in_ms )*100:.2f}%)\n"
         )

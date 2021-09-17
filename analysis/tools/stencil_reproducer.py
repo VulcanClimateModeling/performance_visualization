@@ -7,10 +7,16 @@ from shutil import copy, copytree
 from typing import Dict, Tuple
 
 import numpy as np
-from gt4py import storage
 
-from fv3core.utils.mpi import MPI
+try:
+    from gt4py import storage
+except ModuleNotFoundError:
+    storage = None
 
+try:
+    from fv3core.utils.mpi import MPI
+except ModuleNotFoundError:
+    MPI = None
 
 STENCIL_CANDIDATE_FOR_EXTRACT: Dict[str, Tuple[str, str]] = {}
 

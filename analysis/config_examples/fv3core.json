@@ -64,7 +64,7 @@
             "name_op": "wrapper"
         }
     ],
-    "nsys": {
+    "nsys_mine": {
         "cuda_kernel_filtering_regex": "(?<=bound_functor)(.*?)(?=_impl)",
         "nvtx_marks": {
             "mainloop": "step_dynamics",
@@ -79,12 +79,12 @@
                 },
                 {
                     "name": "halo exchange",
+                    "keys_for_call_count": [
+                        "HaloUpdater.start"
+                    ],
                     "keys": [
                         "HaloUpdater.wait",
-                        "HaloEx: unpack and wait",
-                        "HaloUpdater.start",
-                        "HaloEx: async scalar",
-                        "HaloEx: async vector"
+                        "HaloUpdater.start"
                     ],
                     "keys_to_remove": [
                         "Pre-halo device synchronize"

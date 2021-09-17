@@ -5,3 +5,4 @@ argparse
 pathlib
 statistics
 gprof2dot
+tabulate
