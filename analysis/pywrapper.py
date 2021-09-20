@@ -46,6 +46,8 @@ def parse_args():
 
 
 def profile_hook(frame, event, args):
+    if cmd_line_args is None:
+        return
     if cmd_line_args.nvtx and nvtx_markings.mark is not None:
         nvtx_markings.mark(frame, event, args)
     if (
