@@ -189,6 +189,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         plt.gcf().set_size_inches(8, 6)
         plt.savefig("history_" + plot_name + ".png", dpi=100, bbox_inches="tight")
 
+    full_timing_data.reverse()
     for plot_name, plot_config in timing_bar_plots.items():
         matplotlib.rcParams.update({"font.size": fontsize})
         last_fortran = [
@@ -214,6 +215,9 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
                     if len(x_hash) >= plot_config["run_to_go_back"]:
                         break
           
+            x_hash.reverse()
+            y_median.reverse()
+
             xs = np.arange(min(plot_config["run_to_go_back"], len(x_hash)))
             # plot
             plt.bar(xs, y_median, color=backend_config["color"])
