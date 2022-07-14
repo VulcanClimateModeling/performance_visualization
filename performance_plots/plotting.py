@@ -55,7 +55,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         plt.figure()
         for backend in plot_config["backends"]:
             backend_config = backends[backend]
-        specific = [x for x in full_memory_data if x["setup"]["version"] == backend]
+        specific = [x for x in full_memory_data if backend in x["setup"]["version"]  ]
         if plot_config["only_recent"]:
             select = []
             for datum in specific:
@@ -108,7 +108,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
         plt.figure()
         for backend in plot_config["backends"]:
             backend_config = backends[backend]
-            specific = [x for x in full_timing_data if x["setup"]["version"] == backend]
+            specific = [x for x in full_timing_data if backend in x["setup"]["version"] ]
             if plot_config["only_recent"]:
                 select = []
                 for datum in specific:
@@ -205,7 +205,7 @@ def plotting(data_dir: str, config_file: Optional[str] = None):
             x_hash = []
             y_median = []
             specific = [
-                x for x in full_timing_data if x["setup"]["version"] == backend
+                x for x in full_timing_data if backend in x["setup"]["version"] 
             ]
             for x in specific:
                 commit_hash = x["setup"]["hash"][:6]

@@ -5,17 +5,17 @@
             "color": "#bdb8ad",
             "short_name": "f90"
         },
-        "python/gtc:gt:gpu": {
+        "python/gt:gpu": {
             "color": "#f5793a",
-            "short_name": "gtc:gpu"
+            "short_name": "gt_gpu"
         },
         "python/gtcuda": {
             "color": "#ee442f",
             "short_name": "gtcuda"
         },
-        "python/gtc:gt:cpu_ifirst": {
+        "python/gt:cpu_ifirst": {
             "color": "#85c0f9",
-            "short_name": "gtc:cpu_ifirst"
+            "short_name": "gt_cpu_ifirst"
         },
         "python/gtx86": {
             "color": "#0f2080",
@@ -30,8 +30,8 @@
         "absolute_time": {
             "backends": [
                 "fortran",
-                "python/gtc:gt:gpu",
-                "python/gtc:gt:cpu_ifirst"
+                "python/gt:gpu",
+                "python/gt:cpu_ifirst"
             ],
             "only_recent": false,
             "plot_stddev": false,
@@ -54,8 +54,8 @@
         "absolute_time_recent": {
             "backends": [
                 "fortran",
-                "python/gtc:gt:gpu",
-                "python/gtc:gt:cpu_ifirst"
+                "python/gt:gpu",
+                "python/gt:cpu_ifirst"
             ],
             "only_recent": true,
             "plot_stddev": false,
@@ -77,8 +77,8 @@
         },
         "per_timestep": {
             "backends": [
-                "python/gtc:gt:gpu",
-                "python/gtc:gt:cpu_ifirst",
+                "python/gt:gpu",
+                "python/gt:cpu_ifirst",
                 "python/gtcuda",
                 "python/gtx86",
                 "fortran"
@@ -99,8 +99,8 @@
         },
         "per_timestep_recent": {
             "backends": [
-                "python/gtc:gt:gpu",
-                "python/gtc:gt:cpu_ifirst",
+                "python/gt:gpu",
+                "python/gt:cpu_ifirst",
                 "fortran"
             ],
             "only_recent": true,
@@ -119,8 +119,8 @@
         },
         "per_timestep_mainloop_detail": {
             "backends": [
-                "python/gtc:gt:gpu",
-                "python/gtc:gt:cpu_ifirst",
+                "python/gt:gpu",
+                "python/gt:cpu_ifirst",
                 "fortran"
             ],
             "only_recent": true,
@@ -167,8 +167,8 @@
     "timing_bar_plots": {
         "mainloop_vs_fortran": {
             "backends": [
-                "python/gtc:gt:gpu",
-                "python/gtc:gt:cpu_ifirst"
+                "python/gt:gpu",
+                "python/gt:cpu_ifirst"
             ],
             "run_to_go_back": 10,
             "yscale": "linear",
@@ -179,7 +179,7 @@
     "memory_plots": {
         "memory_footprint": {
             "backends": [
-                "python/gtc:gt:gpu"
+                "python/gt:gpu"
             ],
             "only_recent": true,
             "title": "Memory usage per GPU for total run",

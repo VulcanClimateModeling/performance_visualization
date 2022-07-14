@@ -14,8 +14,8 @@ def generate_timing_plots(file_directory):
 
 def genererate_plain_text_profile_summary(file_directory):
     os.environ["experiment"] = "c128_6ranks_baroclinic"
-    os.environ["backend"] = "gtc:gt:gpu"
-    profile_path = file_directory + "/fv3core_profile/gtc_gt_gpu/prof"
+    os.environ["backend"] = "gt:gpu"
+    profile_path = file_directory + "/fv3core_profile/gt_gpu/prof"
     val = subprocess.check_call(
         "./performance_profile/plain_text_summary.sh '%s'" % profile_path,
         shell=True,
@@ -24,7 +24,7 @@ def genererate_plain_text_profile_summary(file_directory):
 
 def generate_plain_text_history(file_directory):
     os.environ["experiment"] = "c128_6ranks_baroclinic"
-    history_path = file_directory + "/fv3core_performance/gtc_gt_gpu/"
+    history_path = file_directory + "/fv3core_performance/gt_gpu/"
     val = subprocess.check_call(
         "./summary_files/plain_text_summary.sh '%s'" % history_path,
         shell=True,
@@ -33,8 +33,8 @@ def generate_plain_text_history(file_directory):
 
 def visualize_profile(file_directory):
     os.environ["experiment"] = "c128_6ranks_baroclinic"
-    os.environ["backend"] = "gtc:gt:gpu"
-    profile_path = file_directory + "/fv3core_profile/gtc_gt_gpu/prof"
+    os.environ["backend"] = "gt:gpu"
+    profile_path = file_directory + "/fv3core_profile/gt_gpu/prof"
     val = subprocess.check_call(
         "./performance_profile/visualize_profile.sh '%s'" % profile_path,
         shell=True,
